@@ -1,6 +1,6 @@
 # create cors.py file with following lines:
 
-# from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 #
 # origins = [
 #     "",  # Update with the actual origin of your React app
