@@ -2,3 +2,4 @@
 config/cors.py
 venv
 .idea
+__pycache__
