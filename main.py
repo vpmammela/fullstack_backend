@@ -1,9 +1,13 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
+from config.cors import configure_cors
 import uvicorn
 from pydantic import BaseModel
 from starlette import status
 
 app = FastAPI()
+
+# Configure CORS
+configure_cors(app)
 
 class Test(BaseModel):
     test: str
