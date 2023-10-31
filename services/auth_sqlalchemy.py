@@ -13,8 +13,8 @@ class AuthService(BaseService):
 
     def register(self, req: dtos.auth.UserRegisterReq):
         user = models.User(
-            lastName=req.firstName,
             firstName=req.firstName,
+            lastName=req.lastName,
             email=req.username,
             password=bcrypt_context.hash(req.password),
             role='student'
