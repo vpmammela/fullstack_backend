@@ -5,8 +5,8 @@ class BaseService:
     def __init__(self, db: models.Db):
         self.db = db
 
-        def commit(self):
-            self.db.commit()
+    def commit(self):
+        self.db.commit()
 
-        def add(self, entity):
-            self.db.add(entity)
+    def add(self, entity):
+        self.db.add(entity)
