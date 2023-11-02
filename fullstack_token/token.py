@@ -29,12 +29,35 @@ class SymmetricToken(BaseToken):
         data = {'iss': issuer, 'aud': audience, 'type': _type, 'sub': sub, 'iat': now, 'nbf': now - 10}
         if exp is not None:
             data['exp'] = exp
-        _token = jwt.encode(data, secret, algorithm='HS256')
+
+        _token = jwt.encode(data, secret, algorithm='HS512')
         return _token
 
 
 class AsymmetricToken(BaseToken):
-    pass
+    def __init__(self):
+        with open('cert/id_rsa') as f:
+            self.private = f.read()
+        with open('cert/id_rsa.pub') as f:
+            self.public = f.read()
+
+    def create(self, claims):
+        now = time.time()
+        issuer = 'fullstackmvp'
+        audience = 'localhost'
+        _type = claims['type']
+        exp = claims['exp']
+        sub = claims['sub']
+        csrf = claims['csrf']
+
+        data = {'iss': issuer, 'aud': audience, 'type': _type, 'sub': sub, 'iat': now, 'nbf': now - 10}
+        if exp is not None:
+            data['exp'] = exp
+        if csrf is not None:
+            data['csrf'] = csrf
+
+        _token = jwt.encode(data, self.private, algorithm='RS512')
+        return _token
 
 
 def init_token():

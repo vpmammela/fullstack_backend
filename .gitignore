@@ -1,5 +1,7 @@
 # Ignore config/cors.py
 config/cors.py
+.env
 venv
 .idea
 __pycache__
+cert

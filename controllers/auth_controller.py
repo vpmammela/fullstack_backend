@@ -1,7 +1,9 @@
+import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from starlette.responses import Response
 
 import fullstack_token.token
 import models
@@ -30,8 +32,18 @@ async def register(req: UserRegisterReq, service: AuthServ):
 
 
 @router.post('/login', response_model=UserLoginRes)
-async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_token.token.Token):
-    access, refresh = service.login(login_form.username, login_form.password, _token)
-    if access is None and refresh is None:
+async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_token.token.Token, res: Response):
+    csrf = str(uuid.uuid4())
+    access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
+
+    if access is None and refresh is None and csrf_token is None:
         raise HTTPException(status_code=404, detail='user not found')
-    return {'access_token': access, 'refresh_token': refresh}
+    res.set_cookie("access_token_cookie", access, secure=False, httponly=True)
+    res.set_cookie("refresh_token_cookie", refresh, secure=False, httponly=True)
+    res.set_cookie("csrf_token_cookie", csrf_token, secure=False, httponly=True)
+
+    return {'access_token': access, 'refresh_token': refresh, 'csrf_token': csrf_token}
+
+# ToDo
+# Middleware joka tarkistaa että csrf_token_cookien 'sub' arvo on sama kuin access_tokenin 'csrf' arvo
+# Tarvitaan SSL sertifikaatio, että saadaan cookiet käyttöön frontendissä

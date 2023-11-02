@@ -29,7 +29,7 @@ class AuthService(BaseService):
 
         return user
 
-    def login(self, username: str, password: str, _token: Token):
+    def login(self, username: str, password: str, csrf: str, _token: Token):
         user = self.db.query(models.User).filter(models.User.email == username).first()
         if user is None:
             return None, None
@@ -40,11 +40,12 @@ class AuthService(BaseService):
         now = time.time()
         access_token_sub = str(uuid.uuid4())
         refresh_token_sub = str(uuid.uuid4())
-        access_token = _token.create({'type': 'access', 'sub': access_token_sub, 'exp': now + 3600})
-        refresh_token = _token.create({'type': 'refresh', 'sub': refresh_token_sub, 'exp': now + 3600*24})
+        access_token = _token.create({'type': 'access', 'sub': access_token_sub, 'exp': now + 3600, 'csrf': csrf})
+        refresh_token = _token.create({'type': 'refresh', 'sub': refresh_token_sub, 'exp': now + 3600*24, 'csrf': None})
+        csrf_token = _token.create({'type': 'csrf', 'sub': csrf, 'exp': None, 'csrf': None})
 
         user.access_token_identifier = access_token_sub
         user.refresh_token_identifier = refresh_token_sub
         self.db.commit()
 
-        return access_token, refresh_token
+        return access_token, refresh_token, csrf_token
