@@ -1,3 +1,4 @@
+cors
 fastapi
 uvicorn[standard]
 mysql-connector-python
