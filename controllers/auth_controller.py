@@ -7,8 +7,9 @@ from starlette.responses import Response
 
 import fullstack_token.token
 import models
-from dtos.auth import UserRegisterReq, UserRegisterRes, UserLoginRes
-from services.auth_sqlalchemy import AuthService
+from dependencies import LoggedInUser
+from dtos.auth import UserRegisterReq, UserRegisterRes, UserLoginRes, UserAccountRes
+from services.auth_sqlalchemy import AuthService, AuthServ
 
 router = APIRouter(
     tags=['auth'],
@@ -17,11 +18,9 @@ router = APIRouter(
 
 LoginForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 
-def get_auth_service(db: models.Db):
-    return AuthService(db)
-
-
-AuthServ = Annotated[AuthService, Depends(get_auth_service)]
+@router.get('/account', response_model=UserAccountRes)
+async def get_account(service: AuthServ, account: LoggedInUser):
+    return account
 
 
 @router.post('/register', response_model=UserRegisterRes)
@@ -38,9 +37,9 @@ async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_toke
 
     if access is None and refresh is None and csrf_token is None:
         raise HTTPException(status_code=404, detail='user not found')
-    res.set_cookie("access_token_cookie", access, secure=False, httponly=True)
-    res.set_cookie("refresh_token_cookie", refresh, secure=False, httponly=True)
-    res.set_cookie("csrf_token_cookie", csrf_token, secure=False, httponly=True)
+    res.set_cookie("access_token_cookie", access, secure=True, httponly=True)
+    res.set_cookie("refresh_token_cookie", refresh, secure=True, httponly=True)
+    res.set_cookie("csrf_token_cookie", csrf_token, secure=True, httponly=True)
 
     return {'access_token': access, 'refresh_token': refresh, 'csrf_token': csrf_token}
 

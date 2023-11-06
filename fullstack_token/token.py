@@ -59,6 +59,9 @@ class AsymmetricToken(BaseToken):
         _token = jwt.encode(data, self.private, algorithm='RS512')
         return _token
 
+    def validate(self, t):
+        claims = jwt.decode(t, self.public, algorithms=['RS512'], audience='localhost')
+        return claims
 
 def init_token():
     _type = os.getenv('JWT_TYPE')

@@ -17,3 +17,11 @@ class UserRegisterRes(BaseModel):
 class UserLoginRes(BaseModel):
     access_token: str
     refresh_token: str
+
+
+class UserAccountRes(BaseModel):
+    id: int
+    email: str
+    firstName: str
+    lastName: str
+    role: str

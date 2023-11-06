@@ -1,5 +1,6 @@
 import time
 import uuid
+from typing import Annotated
 
 from passlib.context import CryptContext
 
@@ -7,6 +8,7 @@ import dtos.auth
 import models
 from fullstack_token.token import BaseToken, Token
 from services.base_service import BaseService
+from fastapi import Depends
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -29,6 +31,10 @@ class AuthService(BaseService):
 
         return user
 
+    def get_user_by_sub(self, sub):
+        user = self.db.query(models.User).filter(models.User.access_token_identifier == sub).first()
+        return user
+
     def login(self, username: str, password: str, csrf: str, _token: Token):
         user = self.db.query(models.User).filter(models.User.email == username).first()
         if user is None:
@@ -49,3 +55,7 @@ class AuthService(BaseService):
         self.db.commit()
 
         return access_token, refresh_token, csrf_token
+def get_auth_service(db: models.Db):
+    return AuthService(db)
+
+AuthServ = Annotated[AuthService, Depends(get_auth_service)]
