@@ -7,3 +7,4 @@ passlib[bcrypt]
 python-dotenv
 pyJWT[crypto]
 python-multipart
+alembic

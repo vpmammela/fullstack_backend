@@ -7,5 +7,8 @@
 - Check corsExample.py
 - add your frontend address for example: http://localhost:5173
 
+### Run migrations
+```alembic upgrade head```
+
 ### Start server (mac):
 ``` python3 main.py ```
