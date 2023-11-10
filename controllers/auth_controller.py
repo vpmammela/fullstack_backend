@@ -32,11 +32,18 @@ async def register(req: UserRegisterReq, service: AuthServ):
 
 @router.post('/login', response_model=UserLoginRes)
 async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_token.token.Token, res: Response):
+    print("something is happening")
     csrf = str(uuid.uuid4())
-    access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
+    #access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
+    try:
+        access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
+    except Exception as e:
+        print(f"Exception in login: {e}")
+        raise
 
     if access is None and refresh is None and csrf_token is None:
         raise HTTPException(status_code=404, detail='user not found')
+    print(f"Login successful: access={access}, refresh={refresh}, csrf_token={csrf_token}")
     res.set_cookie("access_token_cookie", access, secure=True, httponly=True)
     res.set_cookie("refresh_token_cookie", refresh, secure=True, httponly=True)
     res.set_cookie("csrf_token_cookie", csrf_token, secure=True, httponly=True)
