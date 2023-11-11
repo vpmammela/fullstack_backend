@@ -4,6 +4,9 @@ from typing import Annotated
 
 import jwt
 from fastapi import Depends
+from starlette.responses import Response
+
+from fullstack_token.base import AuthResponseHandlerBase
 
 
 class BaseToken:
@@ -72,3 +75,12 @@ def init_token():
 
 
 Token = Annotated[BaseToken, Depends(init_token)]
+
+class AuthResponseHandlerToken(AuthResponseHandlerBase):
+    async def send(self, res: Response, access: str, refresh: str, csrf: str, sub: str):
+        res.set_cookie("access_token_cookie", access, secure=True, httponly=True)
+        res.set_cookie("refresh_token_cookie", refresh, secure=True, httponly=True)
+        res.set_cookie("csrf_token_cookie", csrf, secure=True, httponly=True)
+
+        return {'access_token': access, 'refresh_token': refresh, 'csrf_token': csrf}
+

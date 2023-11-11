@@ -17,7 +17,7 @@ class UserRegisterRes(BaseModel):
 class UserLoginRes(BaseModel):
     access_token: str
     refresh_token: str
-    csrf_token: str
+    #csrf_token: str
 
 
 class UserAccountRes(BaseModel):
@@ -26,3 +26,6 @@ class UserAccountRes(BaseModel):
     firstName: str
     lastName: str
     role: str
+
+class SessionData(BaseModel):
+    data: str
