@@ -20,7 +20,7 @@ router = APIRouter(
 LoginForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
-@router.get('/account', response_model=UserAccountRes)
+@router.get('/account', depencies=[Depends(cookie)], response_model=UserAccountRes)
 async def get_account(service: AuthServ, account: LoggedInUser):
     return account
 
@@ -32,12 +32,14 @@ async def register(req: UserRegisterReq, service: AuthServ):
 
 
 
-@router.post('/login', response_model=UserLoginRes)
+@router.post('/login')
 async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_token.token.Token, res: Response,
                 res_handler: AuthRes):
     print("something is happening")
     csrf = str(uuid.uuid4())
-    #access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
+    tokens = service.login(login_form.username, login_form.password, csrf, _token)
+    if tokens is None:
+        raise HTTPException(status_code=404, detail='user not found')
     try:
         access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
     except Exception as e:
@@ -48,5 +50,8 @@ async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_toke
         raise HTTPException(status_code=404, detail='user not found')
     print(f"Login successful: access={access}, refresh={refresh}, csrf_token={csrf_token}")
 
-    return await res_handler.send(res, access, refresh, csrf_token, '')
+    #Tässä oli valmiina eri tavaraa, kun videossa rivi 56... ???
+    return await res_handler.send(res, tokens['access_token'], 
+                                tokens['refresh_token'], tokens['csrf_token'], tokens['sub']) 
+                                #access, refresh, csrf_token, '')
 

@@ -1,9 +1,13 @@
+import uuid
 from fastapi_sessions.frontends.implementations import SessionCookie, CookieParameters
 from uuid import UUID
 from fastapi_sessions.backends.implementations import InMemoryBackend
 from fastapi_sessions.session_verifier import SessionVerifier
 from fastapi import HTTPException
 from dtos.auth import SessionData
+from fullstack_token.base import AuthResponseHandlerBase
+from starlette import Response
+
 
 cookie_params = CookieParameters()
 
@@ -11,7 +15,7 @@ cookie_params = CookieParameters()
 cookie = SessionCookie(
     cookie_name="cookie",
     identifier="general_verifier",
-    auto_error=True,
+    auto_error=False,
     secret_key="DONOTUSE",
     cookie_params=cookie_params,
 )
@@ -61,3 +65,14 @@ verifier = BasicVerifier(
     backend=backend,
     auth_http_exception=HTTPException(status_code=403, detail="invalid session"),
 )
+
+class AuthResponseHandlerSession(AuthResponseHandlerBase):
+    async def send(self, res: Response, access: str, _: str, csrf: str, sub: str):
+        print('################ sub', sub)
+        session = uuid.uuid4()
+        data = SessionData(data=sub)
+        await backend.create(session, data)
+        cookie.attach_to_response(res, session)
+        res.set_cookie('csrf_token_cookie', 'csrf')
+        
+        return True
