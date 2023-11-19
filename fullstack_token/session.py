@@ -6,7 +6,7 @@ from fastapi_sessions.session_verifier import SessionVerifier
 from fastapi import HTTPException
 from dtos.auth import SessionData
 from fullstack_token.base import AuthResponseHandlerBase
-from starlette import Response
+from starlette.responses import Response
 
 
 cookie_params = CookieParameters()

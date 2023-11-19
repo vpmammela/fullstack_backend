@@ -34,19 +34,19 @@ class AuthRequiredHandleToken(AuthRequiredHandlerBase):
                 if authorization is not None:
                     encoded = authorization
             if encoded is None:
-                raise HTTPException(status_code=401, detail='unauthorized')
+                raise HTTPException(status_code=401, detail='unauthorized Token 1')
 
             validated = _token.validate(encoded)
             if validated['type'] != 'access':
-                raise HTTPException(status_code=401, detail='Unauthorized')
+                raise HTTPException(status_code=401, detail='Unauthorized Token 2')
             user = service.get_user_by_sub(validated['sub'])
             if user is None:
-                raise HTTPException(status_code=401, detail='Unauthorized')
+                raise HTTPException(status_code=401, detail='Unauthorized Token 3')
 
             return user
         except Exception as e:
             print('4')
-            raise HTTPException(status_code=401, detail='Unauthorized')
+            raise HTTPException(status_code=401, detail='Unauthorized Token 4')
 
 class AuthRequiredHandlerSession(AuthRequiredHandlerBase):
     def verify(self, _token: Token, service: AuthServ,
@@ -82,7 +82,7 @@ def init_auth_handler():
     else:
         return AuthRequiredHandleToken()
     
-AccountHandler = Annotated[AuthResponseHandlerBase, Depends(init_auth_handler)]
+AccountHandler = Annotated[AuthRequiredHandlerBase, Depends(init_auth_handler)]
 
 
 def get_logged_in_user(_token: Token, service: AuthServ, account_handler: AccountHandler,

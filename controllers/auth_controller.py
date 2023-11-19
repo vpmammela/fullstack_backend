@@ -20,7 +20,7 @@ router = APIRouter(
 LoginForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
-@router.get('/account', depencies=[Depends(cookie)], response_model=UserAccountRes)
+@router.get('/account', dependencies=[Depends(cookie)], response_model=UserAccountRes)
 async def get_account(service: AuthServ, account: LoggedInUser):
     return account
 
@@ -40,15 +40,17 @@ async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_toke
     tokens = service.login(login_form.username, login_form.password, csrf, _token)
     if tokens is None:
         raise HTTPException(status_code=404, detail='user not found')
-    try:
-        access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
-    except Exception as e:
-        print(f"Exception in login: {e}")
-        raise
+    print("Login successful:", tokens)
+    #Tätä ei ollut luennossa, Tarviiko tätä? Pitäisikö "access, refresh, csrf_token" muuttaa tokens, niin kuin yläpuolelle?
+    # try:
+    #     access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
+    # except Exception as e:
+    #     print(f"Exception in login: {e}")
+    #     raise
 
-    if access is None and refresh is None and csrf_token is None:
-        raise HTTPException(status_code=404, detail='user not found')
-    print(f"Login successful: access={access}, refresh={refresh}, csrf_token={csrf_token}")
+    # if access is None and refresh is None and csrf_token is None:
+    #     raise HTTPException(status_code=404, detail='user not found')
+    # print(f"Login successful: access={access}, refresh={refresh}, csrf_token={csrf_token}")
 
     #Tässä oli valmiina eri tavaraa, kun videossa rivi 56... ???
     return await res_handler.send(res, tokens['access_token'], 
