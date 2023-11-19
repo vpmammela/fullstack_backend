@@ -38,10 +38,10 @@ class AuthService(BaseService):
     def login(self, username: str, password: str, csrf: str, _token: Token):
         user = self.db.query(models.User).filter(models.User.email == username).first()
         if user is None:
-            return None, None
+            return None
         valid = bcrypt_context.verify(password, user.password)
         if not valid:
-            return None, None
+            return None
 
         now = time.time()
         access_token_sub = str(uuid.uuid4())
@@ -54,7 +54,9 @@ class AuthService(BaseService):
         user.refresh_token_identifier = refresh_token_sub
         self.db.commit()
 
-        return access_token, refresh_token, csrf_token
+        return {'access_token': access_token, 'refresh_token': refresh_token, 
+                'csrf_token': csrf_token, 'sub': access_token_sub}
+    
 def get_auth_service(db: models.Db):
     return AuthService(db)
 
