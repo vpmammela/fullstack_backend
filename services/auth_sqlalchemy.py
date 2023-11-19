@@ -35,6 +35,12 @@ class AuthService(BaseService):
         user = self.db.query(models.User).filter(models.User.access_token_identifier == sub).first()
         return user
 
+    def logout(self, sub):
+        user = self.get_user_by_sub(sub)
+        user.access_token_identifier = None
+        user.refresh_token_identifier = None
+        self.db.commit()
+
     def login(self, username: str, password: str, csrf: str, _token: Token):
         user = self.db.query(models.User).filter(models.User.email == username).first()
         if user is None:

@@ -13,7 +13,7 @@ cookie_params = CookieParameters()
 
 # Uses UUID
 cookie = SessionCookie(
-    cookie_name="cookie",
+    cookie_name="_cookie",
     identifier="general_verifier",
     auto_error=False,
     secret_key="DONOTUSE",
@@ -76,3 +76,7 @@ class AuthResponseHandlerSession(AuthResponseHandlerBase):
         res.set_cookie('csrf_token_cookie', 'csrf')
         
         return True
+    async def logout(self, session_id:uuid.UUID, res: Response):
+        await backend.delete(session_id)
+        cookie.delete_from_response(res)
+        res.delete_cookie('csrf_token_cookie')

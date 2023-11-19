@@ -57,3 +57,9 @@ async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_toke
                                 tokens['refresh_token'], tokens['csrf_token'], tokens['sub']) 
                                 #access, refresh, csrf_token, '')
 
+@router.post('/logout')
+async def logout(service: AuthServ, res: Response,session_id: Annotated[uuid.UUID, Depends(cookie)],
+                 account: LoggedInUser, res_handler: AuthRes):
+    service.logout(account.access_token_identifier)
+    await res_handler.logout(session_id, res)
+    return True

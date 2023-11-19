@@ -1,5 +1,6 @@
 import os
 import time
+import uuid
 from typing import Annotated
 
 import jwt
@@ -83,4 +84,10 @@ class AuthResponseHandlerToken(AuthResponseHandlerBase):
         res.set_cookie("csrf_token_cookie", csrf, secure=True, httponly=True)
 
         return {'access_token': access, 'refresh_token': refresh, 'csrf_token': csrf}
+
+    async def logout(self, session_id: uuid.UUID, res: Response):
+        res.delete_cookie('access_token_cookie')
+        res.delete_cookie('refresh_token_cookie')
+        res.delete_cookie('csrf_token_cookie')
+
 
