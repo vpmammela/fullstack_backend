@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import os
 import uvicorn
-from controllers import auth_controller, test_controller
+from controllers import auth_controller, test_controller, location_controller
 from config.cors import configure_cors
 from dotenv import load_dotenv
 
@@ -9,6 +9,7 @@ app = FastAPI()
 configure_cors(app)
 app.include_router(auth_controller.router)
 app.include_router(test_controller.router)
+app.include_router(location_controller.router)
 
 
 if __name__=='__main__':

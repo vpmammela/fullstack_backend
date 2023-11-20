@@ -59,6 +59,7 @@ class Location(Base):
     name = Column(String(45), nullable=False, unique=True)
     address = Column(String(45), nullable=False)
     zip_code = Column(String(45), nullable=False)
+    city = Column(String(45), nullable=False)
 
 
 class User(Base):
