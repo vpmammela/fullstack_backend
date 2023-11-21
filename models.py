@@ -74,6 +74,8 @@ class User(Base):
     access_token_identifier = Column(String(45))
     refresh_token_identifier = Column(String(45))
 
+    def __eq__(self, other):
+        return type(self) == type(other) and self.id == other.id
 
 class Environment(Base):
     __tablename__ = 'environment'
