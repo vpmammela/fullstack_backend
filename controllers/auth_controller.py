@@ -31,34 +31,23 @@ async def register(req: UserRegisterReq, service: AuthServ):
     return {'username': user.email, 'firstName': user.firstName, 'lastName': user.lastName}
 
 
-
 @router.post('/login')
 async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_token.token.Token, res: Response,
                 res_handler: AuthRes):
     print("something is happening")
     csrf = str(uuid.uuid4())
     tokens = service.login(login_form.username, login_form.password, csrf, _token)
+
     if tokens is None:
         raise HTTPException(status_code=404, detail='user not found')
     print("Login successful:", tokens)
-    #Tätä ei ollut luennossa, Tarviiko tätä? Pitäisikö "access, refresh, csrf_token" muuttaa tokens, niin kuin yläpuolelle?
-    # try:
-    #     access, refresh, csrf_token = service.login(login_form.username, login_form.password, csrf, _token)
-    # except Exception as e:
-    #     print(f"Exception in login: {e}")
-    #     raise
 
-    # if access is None and refresh is None and csrf_token is None:
-    #     raise HTTPException(status_code=404, detail='user not found')
-    # print(f"Login successful: access={access}, refresh={refresh}, csrf_token={csrf_token}")
+    return await res_handler.send(res, tokens['access_token'],
+                                  tokens['refresh_token'], tokens['csrf_token'], tokens['sub'])
 
-    #Tässä oli valmiina eri tavaraa, kun videossa rivi 56... ???
-    return await res_handler.send(res, tokens['access_token'], 
-                                tokens['refresh_token'], tokens['csrf_token'], tokens['sub']) 
-                                #access, refresh, csrf_token, '')
 
 @router.post('/logout')
-async def logout(service: AuthServ, res: Response,session_id: Annotated[uuid.UUID, Depends(cookie)],
+async def logout(service: AuthServ, res: Response, session_id: Annotated[uuid.UUID, Depends(cookie)],
                  account: LoggedInUser, res_handler: AuthRes):
     service.logout(account.access_token_identifier)
     await res_handler.logout(session_id, res)

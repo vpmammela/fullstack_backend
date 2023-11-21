@@ -60,7 +60,7 @@ class AuthService(BaseService):
         user.refresh_token_identifier = refresh_token_sub
         self.db.commit()
 
-        return {'access_token': access_token, 'refresh_token': refresh_token, 
+        return {'access_token': access_token, 'refresh_token': refresh_token,
                 'csrf_token': csrf_token, 'sub': access_token_sub}
     
 def get_auth_service(db: models.Db):
