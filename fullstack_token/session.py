@@ -73,7 +73,7 @@ class AuthResponseHandlerSession(AuthResponseHandlerBase):
         data = SessionData(data=sub)
         await backend.create(session, data)
         cookie.attach_to_response(res, session)
-        res.set_cookie('csrf_token_cookie', 'csrf')
+        res.set_cookie('csrf_token_cookie', csrf)
         
         return True
     async def logout(self, session_id:uuid.UUID, res: Response):
