@@ -28,11 +28,14 @@ services:
     environment:
       JWT_SECRET: ${JWT_SECRET}
       JWT_TYPE: asymmetric
-      SSL: "0"
+      SSL: 0
       AUTH_TYPE: token
       CONNECTION_STRING: mysql+mysqlconnector://root:${MYSQL_ROOT_PASSWORD}@db/fullstack3002mvp
+    volumes:
+      - static-data:/app/static
     depends_on:
       - db
 volumes:
   db-data:
+  static-data:
 

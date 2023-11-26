@@ -98,27 +98,5 @@ def get_logged_in_user(_token: Token, service: AuthServ, account_handler: Accoun
 LoggedInUser = Annotated[models.User, Depends(get_logged_in_user)]
 AuthRes = Annotated[AuthResponseHandlerBase, Depends(init_auth_res)]
 
-'''
-class AuthRequiredHandlerToken(AuthRequiredHandlerBase):
-    def verify(self, _token: Token, service: AuthServ,
-               authorization: Annotated[Optional[str], Depends(oauth_scheme)] = None,
-               access_token_cookie: Annotated[Optional[str], Cookie()] = None,
-               _cookie: Annotated[Optional[SessionData], Depends(verifier)] = None):
-
-        try:
-            encoded = None
-            if access_token_cookie is not None:
-                encoded = access_token_cookie
-            else:
-                if authorization is not None:
-                    encoded = authorization
-
-            if encoded is None:
-                raise HTTPException(status_code=401, detail='Unauthorized')
-            validated = token.validate(encoded)
-            if validated['type'] != 'access':
-                raise HTTPException(status_code=401, detail='Unauthorized')
-
-'''
 
 
