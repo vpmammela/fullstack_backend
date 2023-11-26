@@ -19,3 +19,6 @@ class LocationService(BaseService):
 
         return location
 
+    def get_all(self):
+        locations = self.db.query(models.Location).all()
+        return locations
