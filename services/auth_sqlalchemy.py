@@ -31,15 +31,31 @@ class AuthService(BaseService):
 
         return user
 
-    def get_user_by_sub(self, sub):
+    def get_user_by_access_token_identifier(self, sub):
         user = self.db.query(models.User).filter(models.User.access_token_identifier == sub).first()
         return user
 
+    def get_user_by_refresh_token_identifier(self, sub):
+        user = self.db.query(models.User).filter(models.User.refresh_token_identifier == sub).first()
+        return user
+
     def logout(self, sub):
-        user = self.get_user_by_sub(sub)
+        user = self.get_user_by_access_token_identifier(sub)
         user.access_token_identifier = None
         user.refresh_token_identifier = None
         self.db.commit()
+
+    def refresh(self, refreshable_user: models.User, _token: Token, csrf:str):
+        now = time.time()
+        access_token_sub = str(uuid.uuid4())
+        access_token = _token.create({'type': 'access', 'sub': access_token_sub, 'exp': now + 3600, 'csrf': csrf})
+        csrf_token = _token.create({'type': 'csrf', 'sub': csrf, 'exp': None, 'csrf': None})
+        refreshable_user.access_token_identifier = access_token_sub
+        self.db.commit()
+
+        return {'access_token': access_token,
+                'csrf_token': csrf_token, 'sub': access_token_sub}
+
 
     def login(self, username: str, password: str, csrf: str, _token: Token):
         user = self.db.query(models.User).filter(models.User.email == username).first()

@@ -39,7 +39,7 @@ class AuthRequiredHandleToken(AuthRequiredHandlerBase):
             validated = _token.validate(encoded)
             if validated['type'] != 'access':
                 raise HTTPException(status_code=401, detail='Unauthorized Token 2')
-            user = service.get_user_by_sub(validated['sub'])
+            user = service.get_user_by_access_token_identifier(validated['sub'])
             if user is None:
                 raise HTTPException(status_code=401, detail='Unauthorized Token 3')
 
@@ -58,7 +58,7 @@ class AuthRequiredHandlerSession(AuthRequiredHandlerBase):
             if _cookie is None:
                 raise HTTPException(status_code=401, detail='Unauthorized1')
             
-            user = service.get_user_by_sub(_cookie.data)
+            user = service.get_user_by_access_token_identifier(_cookie.data)
             
             if user is None:
                 raise HTTPException(status_code=401, detail='Unauthorized2')
@@ -83,6 +83,31 @@ def init_auth_handler():
         return AuthRequiredHandleToken()
     
 AccountHandler = Annotated[AuthRequiredHandlerBase, Depends(init_auth_handler)]
+
+def get_refresh_token_user(_token: Token, service: AuthServ,
+                       authorization: Annotated[Optional[str], Depends(oauth_scheme)] = None,
+                       refresh_token_cookie: Annotated[Optional[str], Cookie()] = None):
+    try:
+        encoded = None
+        if refresh_token_cookie is not None:
+            encoded = refresh_token_cookie
+        else:
+            if authorization is not None:
+                encoded = authorization
+        if encoded is None:
+            raise HTTPException(status_code=401, detail='unauthorized Token 1')
+
+        validated = _token.validate(encoded)
+        if validated['type'] != 'refresh':
+            raise HTTPException(status_code=401, detail='Unauthorized Token 2')
+        user = service.get_user_by_refresh_token_identifier(validated['sub'])
+        if user is None:
+            raise HTTPException(status_code=401, detail='Unauthorized Token 3')
+
+        return user
+    except Exception as e:
+        print('4')
+        raise HTTPException(status_code=401, detail='Unauthorized Token 4')
 
 
 def get_logged_in_user(_token: Token, service: AuthServ, account_handler: AccountHandler,
