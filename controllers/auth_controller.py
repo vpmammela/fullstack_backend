@@ -7,7 +7,7 @@ from starlette.responses import Response
 
 import fullstack_token.token
 import models
-from dependencies import LoggedInUser, AuthRes
+from dependencies import LoggedInUser, AuthRes, get_refresh_token_user
 from dtos.auth import UserRegisterReq, UserRegisterRes, UserLoginRes, UserAccountRes, SessionData
 from fullstack_token.session import backend, cookie, verifier
 from services.auth_sqlalchemy import AuthService, AuthServ
@@ -44,7 +44,14 @@ async def login(service: AuthServ, login_form: LoginForm, _token: fullstack_toke
 
     return await res_handler.send(res, tokens['access_token'],
                                   tokens['refresh_token'], tokens['csrf_token'], tokens['sub'])
-
+@router.post('/refresh')
+async def refresh(service:AuthServ, _token: fullstack_token.token.Token, res:Response,
+                  refreshable_account: Annotated[models.User, Depends(get_refresh_token_user)]):
+    csrf = str(uuid.uuid4())
+    tokens = service.refresh(refreshable_account, _token, csrf)
+    res.set_cookie("access_token_cookie", tokens['access_token'], secure=True, httponly=True)
+    res.set_cookie("csrf_token_cookie", csrf, secure=True, httponly=True)
+    return tokens
 
 @router.post('/logout')
 async def logout(service: AuthServ, res: Response, session_id: Annotated[uuid.UUID, Depends(cookie)],
