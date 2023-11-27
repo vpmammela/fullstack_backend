@@ -19,21 +19,22 @@ app.include_router(location_controller.router)
 #Checking the correctness of the csrf token in every request except get and head
 @app.middleware("http")
 async def check_csrf(request: Request, call_next):
-    response = await call_next(request)
     if request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
-        if str(request.url).find('login') == -1:  #Check all URLs except for the login.
+
+        if str(request.url).find('login') == -1 and str(request.url).find('register') == -1: #Check all URLs except for the login and register.
             try:
+
                 _token = fullstack_token.token.init_token()
                 csrf = _token.validate(request.cookies.get('csrf_token_cookie'))
                 access = _token.validate(request.cookies.get('access_token_cookie'))
                 if csrf is None or access is None:
-                    return JSONResponse(content={'err': 'forbidden'}, status_code =403)
+                    return JSONResponse(content={'err': 'forbidden'}, status_code=403)
                 if csrf['sub'] != access['csrf']:
                     return JSONResponse(content={'err': 'forbidden'}, status_code=403)
             except Exception as e:
                 return JSONResponse(content={'err': 'forbidden'}, status_code=403)
+    response = await call_next(request)
     return response
-
 
 
 if __name__=='__main__':
