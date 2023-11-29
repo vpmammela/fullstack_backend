@@ -3,8 +3,10 @@ import os
 import uvicorn
 from h11 import Request
 from starlette.responses import JSONResponse
+from starlette.staticfiles import StaticFiles
 
 import fullstack_token
+import models
 from controllers import auth_controller, test_controller, location_controller
 from config.cors import configure_cors
 from dotenv import load_dotenv
@@ -18,8 +20,8 @@ app.include_router(auth_controller.router)
 app.include_router(test_controller.router)
 app.include_router(location_controller.router)
 
-app.mount("/", StaticFiles(directory="static"), name="static")
-models.metadata.create_all(bind=models.engine)
+#app.mount("/", StaticFiles(directory="static"), name="static")
+#models.metadata.create_all(bind=models.engine)
 
 #Checking the correctness of the csrf token in every request except get and head
 @app.middleware("http")
@@ -40,14 +42,14 @@ async def check_csrf(request: Request, call_next):
                 return JSONResponse(content={'err': 'forbidden'}, status_code=403)
     response = await call_next(request)
     return response
-
+'''
 # Define a route to get reports
 @app.get("/reports", response_model=List[models.Report])
 async def get_reports():
     # TODO: Replace with actual logic to fetch reports from database.
     reports = models.get_reports() 
     return reports
-
+'''
 
 if __name__=='__main__':
     load_dotenv()

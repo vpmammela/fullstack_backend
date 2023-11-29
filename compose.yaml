@@ -30,7 +30,7 @@ services:
       JWT_TYPE: asymmetric
       SSL: 0
       AUTH_TYPE: token
-      CONNECTION_STRING: mysql+mysqlconnector://root:${MYSQL_ROOT_PASSWORD}@db/fullstack3002mvp
+      DB: mysql+mysqlconnector://root:${MYSQL_ROOT_PASSWORD}@db/fullstack3002mvp
     volumes:
       - static-data:/app/static
     depends_on:
