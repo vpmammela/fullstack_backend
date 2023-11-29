@@ -8,6 +8,8 @@ import fullstack_token
 from controllers import auth_controller, test_controller, location_controller
 from config.cors import configure_cors
 from dotenv import load_dotenv
+from fastapi import HTTPException
+from typing import List
 
 app = FastAPI()
 
@@ -15,6 +17,9 @@ configure_cors(app)
 app.include_router(auth_controller.router)
 app.include_router(test_controller.router)
 app.include_router(location_controller.router)
+
+app.mount("/", StaticFiles(directory="static"), name="static")
+models.metadata.create_all(bind=models.engine)
 
 #Checking the correctness of the csrf token in every request except get and head
 @app.middleware("http")
@@ -35,6 +40,13 @@ async def check_csrf(request: Request, call_next):
                 return JSONResponse(content={'err': 'forbidden'}, status_code=403)
     response = await call_next(request)
     return response
+
+# Define a route to get reports
+@app.get("/reports", response_model=List[models.Report])
+async def get_reports():
+    # TODO: Replace with actual logic to fetch reports from database.
+    reports = models.get_reports() 
+    return reports
 
 
 if __name__=='__main__':
