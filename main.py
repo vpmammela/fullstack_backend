@@ -20,8 +20,8 @@ app.include_router(auth_controller.router)
 app.include_router(test_controller.router)
 app.include_router(location_controller.router)
 
-#app.mount("/", StaticFiles(directory="static"), name="static")
-#models.metadata.create_all(bind=models.engine)
+app.mount("/", StaticFiles(directory="static"), name="static")
+models.metadata.create_all(bind=models.engine)
 
 #Checking the correctness of the csrf token in every request except get and head
 @app.middleware("http")
