@@ -22,3 +22,7 @@ class LocationService(BaseService):
     def get_all(self):
         locations = self.db.query(models.Location).all()
         return locations
+
+    def get_by_id(self, id:int):
+        location = self.db.query(models.Location).filter(models.Location.id == id).first()
+        return location

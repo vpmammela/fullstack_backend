@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException
 from pydantic import BaseModel
 from typing import Annotated
 import models
-from dtos.location import CreateLocationReq, CreateLocationResp, LocationsResp
+from dtos.location import CreateLocationReq, CreateLocationResp, LocationsResp, LocationRespItem
 from services.location_sqlalchemy import LocationService
 from services.auth_sqlalchemy import AuthService, AuthServ
 from dependencies import LoggedInUser
@@ -33,3 +33,9 @@ async def get_locations(authService: AuthServ, account: LoggedInUser, service: L
     locations = service.get_all()
     location_resp_list = [{"id": loc.id, "name": loc.name} for loc in locations]
     return LocationsResp(locations=location_resp_list)
+
+@router.get('/locations/{id}', dependencies=[Depends(cookie)], response_model=LocationRespItem)
+async def get_location_by_id(id: int, authService: AuthServ, account: LoggedInUser, service: LocationService = Depends(LocationService)):
+    location = service.get_by_id(id)
+    location_resp = LocationRespItem(id=location.id, name=location.name)
+    return location_resp
