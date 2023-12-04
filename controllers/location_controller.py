@@ -21,7 +21,7 @@ LoginForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
 @router.post('/location', dependencies=[Depends(cookie)], response_model=CreateLocationResp)
-async def create_location(req: CreateLocationReq, authService: AuthServ, account: LoggedInUser, service: LocationService = Depends(LocationService)):
+async def create_location(req: CreateLocationReq, account: LoggedInUser, service: LocationService = Depends(LocationService)):
     if account.role != "admin":
         raise HTTPException(status_code=401, detail='unauthorized')
     else:
@@ -29,13 +29,13 @@ async def create_location(req: CreateLocationReq, authService: AuthServ, account
         return CreateLocationResp(id=location.id, name=location.name)
 
 @router.get('/locations', dependencies=[Depends(cookie)], response_model=LocationsResp)
-async def get_locations(authService: AuthServ, account: LoggedInUser, service: LocationService = Depends(LocationService)):
+async def get_locations(service: LocationService = Depends(LocationService)):
     locations = service.get_all()
     location_resp_list = [{"id": loc.id, "name": loc.name} for loc in locations]
     return LocationsResp(locations=location_resp_list)
 
 @router.get('/locations/{id}', dependencies=[Depends(cookie)], response_model=LocationRespItem)
-async def get_location_by_id(id: int, authService: AuthServ, account: LoggedInUser, service: LocationService = Depends(LocationService)):
+async def get_location_by_id(id: int, service: LocationService = Depends(LocationService)):
     location = service.get_by_id(id)
     location_resp = LocationRespItem(id=location.id, name=location.name)
     return location_resp
