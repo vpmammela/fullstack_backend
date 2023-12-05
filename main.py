@@ -22,6 +22,7 @@ app.include_router(test_controller.router)
 app.include_router(location_controller.router)
 app.include_router(environment_controller.router)
 app.include_router(inspectiontarget_controller.router)
+app.include_router(inspectionresult_controller.router)
 
 app.mount("/", StaticFiles(directory="static"), name="static")
 models.metadata.create_all(bind=models.engine)
