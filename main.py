@@ -7,7 +7,8 @@ from starlette.staticfiles import StaticFiles
 
 import fullstack_token
 import models
-from controllers import auth_controller, test_controller, location_controller, environment_controller
+from controllers import auth_controller, test_controller, location_controller, environment_controller, \
+    inspectiontarget_controller
 from config.cors import configure_cors
 from dotenv import load_dotenv
 from fastapi import HTTPException
@@ -20,6 +21,7 @@ app.include_router(auth_controller.router)
 app.include_router(test_controller.router)
 app.include_router(location_controller.router)
 app.include_router(environment_controller.router)
+app.include_router(inspectiontarget_controller.router)
 
 app.mount("/", StaticFiles(directory="static"), name="static")
 models.metadata.create_all(bind=models.engine)
