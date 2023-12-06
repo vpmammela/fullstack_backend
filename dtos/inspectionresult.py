@@ -6,8 +6,10 @@ class CreateInspResReq(BaseModel):
     value: int
     note: str
     title: str
-    inspection_type: str
+    inspectionform_id: int
 
-class CreateInspResResp(BaseModel):
+class InspResResp(BaseModel):
     id: int
     title: str
+    note: str
+
