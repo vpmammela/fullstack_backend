@@ -26,3 +26,7 @@ async def create_inspection_result(req: CreateInspResReq, authService: AuthServ,
 
     inspectionresult = service.create(req, createdAt)
     return EnvTypeRespItem(id=type.id, name=type.name)
+
+#inspectiontype
+#environment_id
+#inspectiontarget
