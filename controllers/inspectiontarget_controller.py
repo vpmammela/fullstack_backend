@@ -53,3 +53,9 @@ async def get_inspectiontarget_by_id(id: int, authService: AuthServ, account: Lo
     inspectiontarget = service.get_by_id(id)
     inspectiontarget_resp = InspTargRespItem(id=inspectiontarget.id, name=inspectiontarget.name)
     return inspectiontarget_resp
+
+@router.get('/environment/{id}/inspectiontargets', dependencies=[Depends(cookie)], response_model=InspectionTargetsResp)
+async def get_inspectiontargets_by_environment_id(id:int, authService: AuthServ, account: LoggedInUser, service: InspectionTargetService = Depends(InspectionTargetService)):
+    inspectiontargets = service.get_inspectiontargets_by_environment_id(id)
+    inspectiontargets_resp_list = [{"id": it.id, "name": it.name} for it in inspectiontargets]
+    return InspectionTargetsResp(inspectiontargets=inspectiontargets_resp_list)

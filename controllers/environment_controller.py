@@ -53,3 +53,9 @@ async def get_environment_by_id(id: int, authService: AuthServ, account: LoggedI
     environment = service.get_by_id(id)
     environment_resp = EnvRespItem(id=environment.id, name=environment.name)
     return environment_resp
+
+@router.get('/locations/{id}/environments', dependencies=[Depends(cookie)], response_model=EnvironmentsResp)
+async def get_environments_by_location_id(id: int, service: EnvironmentService = Depends(EnvironmentService)):
+    environments = service.get_all_by_location_id(id)
+    environments_resp_list = [{"id": env.id, "name": env.name} for env in environments]
+    return EnvironmentsResp(environments=environments_resp_list)

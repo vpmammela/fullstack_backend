@@ -27,6 +27,10 @@ class EnvironmentService(BaseService):
         environment = self.db.query(models.Environment).filter(models.Environment.id == id).first()
         return environment
 
+    def get_all_by_location_id(self, id:int):
+        environments = self.db.query(models.Environment).filter(models.Environment.location_id == id).all()
+        return environments
+
 class EnvironmentTypeService(BaseService):
     def __init__(self, db: models.Db):
         super(EnvironmentTypeService, self).__init__(db)

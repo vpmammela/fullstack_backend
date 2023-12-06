@@ -28,6 +28,10 @@ class InspectionTargetService(BaseService):
         inspectiontarget = self.db.query(models.Inspectiontarget).filter(models.Inspectiontarget.id == id).first()
         return inspectiontarget
 
+    def get_inspectiontargets_by_environment_id(self, id:int):
+        inspectiontargets = self.db.query(models.Inspectiontarget).filter(models.Inspectiontarget.environment_id == id).all()
+        return inspectiontargets
+
 class InspectionTargetTypeService(BaseService):
     def __init__(self, db: models.Db):
         super(InspectionTargetTypeService, self).__init__(db)
