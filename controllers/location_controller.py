@@ -29,13 +29,13 @@ async def create_location(req: CreateLocationReq, account: LoggedInUser, service
         return CreateLocationResp(id=location.id, name=location.name)
 
 @router.get('/locations', dependencies=[Depends(cookie)], response_model=LocationsResp)
-async def get_locations(service: LocationService = Depends(LocationService)):
+async def get_locations(account: LoggedInUser, service: LocationService = Depends(LocationService)):
     locations = service.get_all()
     location_resp_list = [{"id": loc.id, "name": loc.name} for loc in locations]
     return LocationsResp(locations=location_resp_list)
 
 @router.get('/locations/{id}', dependencies=[Depends(cookie)], response_model=LocationRespItem)
-async def get_location_by_id(id: int, service: LocationService = Depends(LocationService)):
+async def get_location_by_id(id: int, account: LoggedInUser, service: LocationService = Depends(LocationService)):
     location = service.get_by_id(id)
     location_resp = LocationRespItem(id=location.id, name=location.name)
     return location_resp
