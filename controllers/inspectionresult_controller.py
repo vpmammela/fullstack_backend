@@ -24,5 +24,6 @@ LoginForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 @router.post('/inspectionresult', dependencies=[Depends(cookie)], response_model=InspResResp)
 async def create_inspection_result(req: CreateInspResReq, authService: AuthServ, account: LoggedInUser, service: InspectionResultService = Depends(InspectionResultService)):
     createdAt = datetime.now()
+    createdAt = createdAt.strftime('%Y-%m-%d %H:%M:%S')
     inspectionresult = service.create(req, createdAt)
     return InspResResp(id=inspectionresult.id, title=inspectionresult.title, note=inspectionresult.note)
