@@ -6,11 +6,11 @@ class InspectionTargetService(BaseService):
     def __init__(self, db: models.Db):
         super(InspectionTargetService, self).__init__(db)
 
-    def create(self, req: dtos.inspectiontarget.CreateInspTargReq):
+    def create(self, req: dtos.inspectiontarget.CreateInspTargReq, createdAt):
         inspectiontarget = models.Inspectiontarget(
             name=req.name,
             description=req.description,
-            createdAt=req.createdAt,
+            createdAt=createdAt,
             environment_id=req.environment_id,
             inspectiontargettype_id=req.inspectiontargettype_id
         )

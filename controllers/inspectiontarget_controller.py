@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends
 from starlette.responses import Response
 from fastapi.security import OAuth2PasswordRequestForm
@@ -39,7 +41,9 @@ async def create_inspectiontarget(req: CreateInspTargReq, authService: AuthServ,
     if account.role != "admin":
         raise HTTPException(status_code=401, detail='unauthorized')
     else:
-        it = service.create(req)
+        createdAt = datetime.now()
+        createdAt = createdAt.strftime('%Y-%m-%d %H:%M:%S')
+        it = service.create(req, createdAt)
         return CreateInspTargResp(id=it.id, name=it.name)
 
 @router.get('/inspectiontargets', dependencies=[Depends(cookie)], response_model=InspectionTargetsResp)

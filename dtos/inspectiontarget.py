@@ -5,7 +5,6 @@ from datetime import datetime
 class CreateInspTargReq(BaseModel):
     name: str
     description: str
-    createdAt: datetime
     environment_id: int
     inspectiontargettype_id: int
 
