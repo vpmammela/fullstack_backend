@@ -2,6 +2,13 @@ from pydantic import BaseModel
 from typing import List
 from typing import Optional
 
+class AddNewUserReq(BaseModel):
+    username: str
+    password: str
+    firstName: str
+    lastName: str
+    role: str
+
 class UserCreateReq(BaseModel):
     username: str
     password: str

@@ -27,3 +27,5 @@ class EnvTypeRespItem(BaseModel):
 
 class EnvTypesResp(BaseModel):
     types: List[EnvTypeRespItem]
+    
+

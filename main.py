@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, applications
 import os
 import uvicorn
 from h11 import Request
@@ -13,6 +13,7 @@ from config.cors import configure_cors
 from dotenv import load_dotenv
 from fastapi import HTTPException
 from typing import List
+from fastapi import File, UploadFile
 
 app = FastAPI()
 

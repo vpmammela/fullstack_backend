@@ -128,6 +128,8 @@ class Inspectionform(Base):
     inspectiontarget = relationship('Inspectiontarget')
     inspectiontype = relationship('Inspectiontype')
     user = relationship('User')
+    
+    files = relationship('File')
 
 
 class Instruction(Base):
@@ -164,4 +166,13 @@ class Inspectionresult(Base):
     title = Column(Text, nullable=False)
     inspectionform_id = Column(ForeignKey('inspectionform.id'), nullable=False, index=True)
 
+    inspectionform = relationship('Inspectionform')
+
+class File(Base):
+    __tablename__ = 'file'
+    id = Column(Integer, primary_key=True)
+    original_name = Column(String(225), nullable=False)
+    random_name = Column(String(225), nullable=False, index=True)
+    inspectionform_id = Column(ForeignKey('inspectionform.id'), nullable=False, index=True)
+    
     inspectionform = relationship('Inspectionform')
