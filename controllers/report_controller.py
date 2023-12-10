@@ -44,31 +44,30 @@ async def get_report_by_environment_id_and_inspection_type(id: int, inspectionTy
         for result in reports
     ]
 
-    return InspectionresultListResponse(reports=reports_resp_list)
+    return InspectionresultListResponse(items=reports_resp_list)
 
-@router.get('/report/inspectiontarget/{id}/{inspectionType}', dependencies=[Depends(cookie)], response_model=None)
+@router.get('/report/inspectiontarget/{id}/{inspectionType}', dependencies=[Depends(cookie)], response_model=InspectionresultListResponse)
 async def get_report_by_inspectiontarget_id_and_inspection_type(id: int, inspectionType: str, account: LoggedInUser, service: ReportService = Depends(ReportService)):
     reports = service.get_by_inspectiontarget_id(id, inspectionType)
-    # reports_resp_list = [
-    #     {
-    #         "id": result.id,
-    #         "note": result.note,
-    #         "inspectionform_id": result.inspectionform_id,
-    #         "createdAt": result.createdAt.isoformat(),
-    #         "value": result.value,
-    #         "title": result.title,
-    #         "inspectionform": {
-    #             "createdAt": result.inspectionform.createdAt.isoformat(),
-    #             "user_id": result.inspectionform.user_id,
-    #             "inspectiontarget_id": result.inspectionform.inspectiontarget_id,
-    #             "id": result.inspectionform.id,
-    #             "closedAt": result.inspectionform.closedAt.isoformat() if result.inspectionform.closedAt else None,
-    #             "environment_id": result.inspectionform.environment_id,
-    #             "inspectiontype_id": result.inspectionform.inspectiontype_id
-    #         }
-    #     }
-    #     for result in reports
-    # ]
-    #
-    # return InspectionresultListResponse(reports=reports_resp_list)
-    return reports
+    reports_resp_list = [
+        {
+            "id": result.id,
+            "note": result.note,
+            "inspectionform_id": result.inspectionform_id,
+            "createdAt": result.createdAt.isoformat(),
+            "value": result.value,
+            "title": result.title,
+            "inspectionform": {
+                "createdAt": result.inspectionform.createdAt.isoformat(),
+                "user_id": result.inspectionform.user_id,
+                "inspectiontarget_id": result.inspectionform.inspectiontarget_id,
+                "id": result.inspectionform.id,
+                "closedAt": result.inspectionform.closedAt.isoformat() if result.inspectionform.closedAt else None,
+                "environment_id": result.inspectionform.environment_id,
+                "inspectiontype_id": result.inspectionform.inspectiontype_id
+            }
+        }
+        for result in reports
+    ]
+
+    return InspectionresultListResponse(items=reports_resp_list)
