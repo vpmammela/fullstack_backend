@@ -51,3 +51,13 @@ async def get_all_users(authService: AuthServ, account: LoggedInUser, service: U
         users_resp_list = [{"id": user.id, "username": user.email, "firstName": user.firstName, "lastName": user.lastName, "role": user.role} for user in users]
         return UsersListRes(users=users_resp_list)
 
+@router.delete('/users/{id}', dependencies=[Depends(cookie)], response_model=None)
+async def delete_user_by_id(id: int, authService: AuthServ, account: LoggedInUser, service: UserService = Depends(UserService)):
+    if account.role != "admin":
+        raise HTTPException(status_code=401, detail='unauthorized')
+    else:
+        response = service.delete_by_id(id)
+        if response:
+            return True
+        else:
+            raise HTTPException(status_code=404, detail='user not found')

@@ -47,3 +47,14 @@ class UserService(BaseService):
         self.db.commit()
 
         return user
+
+    def delete_by_id(self, id: int):
+        user = self.db.query(models.User).filter(models.User.id == id).first()
+
+        if not user:
+            raise ValueError(f"User with id {id} not found")
+
+        self.db.delete(user)
+        self.db.commit()
+
+        return user
