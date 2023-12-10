@@ -129,7 +129,7 @@ class Inspectionform(Base):
     inspectiontype = relationship('Inspectiontype')
     user = relationship('User')
     
-    files = relationship('File')
+#    files = relationship('File')
 
 
 class Instruction(Base):
