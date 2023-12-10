@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from fastapi import HTTPException
 from typing import List
 from fastapi import File, UploadFile
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
