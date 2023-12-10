@@ -8,7 +8,7 @@ from starlette.staticfiles import StaticFiles
 import fullstack_token
 import models
 from controllers import auth_controller, test_controller, location_controller, environment_controller, \
-    inspectiontarget_controller, inspectionresult_controller, inspectionform_controller, user_controller
+    inspectiontarget_controller, inspectionresult_controller, inspectionform_controller, user_controller, report_controller
 from config.cors import configure_cors
 from dotenv import load_dotenv
 from fastapi import HTTPException
@@ -26,6 +26,7 @@ app.include_router(inspectiontarget_controller.router)
 app.include_router(inspectionresult_controller.router)
 app.include_router(inspectionform_controller.router)
 app.include_router(user_controller.router)
+app.include_router(report_controller.router)
 
 app.mount("/", StaticFiles(directory="static"), name="static")
 models.metadata.create_all(bind=models.engine)
@@ -49,14 +50,6 @@ async def check_csrf(request: Request, call_next):
                 return JSONResponse(content={'err': 'forbidden'}, status_code=403)
     response = await call_next(request)
     return response
-'''
-# Define a route to get reports
-@app.get("/reports", response_model=List[models.Report])
-async def get_reports():
-    # TODO: Replace with actual logic to fetch reports from database.
-    reports = models.get_reports() 
-    return reports
-'''
 
 if __name__=='__main__':
     load_dotenv()
