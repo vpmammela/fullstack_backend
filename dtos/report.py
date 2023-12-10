@@ -7,7 +7,7 @@ class InspectionformResponse(BaseModel):
     inspectiontarget_id: Optional[int]
     id: int
     closedAt: Optional[str]
-    environment_id: int
+    environment_id: Optional[int]
     inspectiontype_id: int
 
 class InspectionresultResponse(BaseModel):

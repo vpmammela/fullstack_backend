@@ -22,3 +22,19 @@ class ReportService(BaseService):
         )
 
         return inspection_results
+
+    def get_by_inspectiontarget_id(self, id: int, inspectionType: str):
+        inspection_results = (
+            self.db.query(models.Inspectionresult)
+                .join(models.Inspectionform)
+                .join(models.Inspectiontarget)
+                .join(models.Inspectiontype)
+                .filter(
+                models.Inspectiontarget.id == id,
+                models.Inspectiontype.name == inspectionType
+            )
+                .options(joinedload(models.Inspectionresult.inspectionform))
+                .all()
+        )
+
+        return inspection_results
