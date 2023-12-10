@@ -10,9 +10,9 @@ class InspectionFormService(BaseService):
         super(InspectionFormService, self).__init__(db)
         
     def get_by_id(self, _id: int):
-        return self.bd.query(models.Inspectionfirm).filter(models.Inspectionform.id == _id).first()
+        return self.bd.query(models.Inspectionfirm).filter(models.Inspectionform.id == id).first()
     
     def init_form_service(db: models.Db):
         return InspectionFormService(db)
     
-FormServ = Annotated[InspectionFormService, Depends(init_form_service)]
+InspectionFormService = Annotated[InspectionFormService, Depends(init_form_service)]
