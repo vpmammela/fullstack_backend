@@ -32,7 +32,7 @@ async def create(req: InspFormReq, authService: AuthServ, account: LoggedInUser,
 
 
 # For photos in forms. 
-@router.post("inspectionform/{id}/image", dependencies=[Depends(cookie)])
+@router.post("/inspectionform/{id}/image", dependencies=[Depends(cookie)])
 async def upload_image(id: int, image: UploadFile, file_service: FileService):
     random_name = str(uuid.uuid4())
     random_name += '.png'
