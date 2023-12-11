@@ -7,7 +7,7 @@ from starlette.staticfiles import StaticFiles
 
 import fullstack_token
 import models
-from controllers import auth_controller, test_controller, location_controller, environment_controller, \
+from controllers import auth_controller, location_controller, environment_controller, \
     inspectiontarget_controller, inspectionresult_controller, inspectionform_controller, user_controller, report_controller
 from config.cors import configure_cors
 from dotenv import load_dotenv
@@ -20,7 +20,6 @@ app = FastAPI()
 
 configure_cors(app)
 app.include_router(auth_controller.router)
-app.include_router(test_controller.router)
 app.include_router(location_controller.router)
 app.include_router(environment_controller.router)
 app.include_router(inspectiontarget_controller.router)
