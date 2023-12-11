@@ -1,6 +1,7 @@
 import dtos.inspectionform
 import models
 from services.base_service import BaseService
+from sqlalchemy.orm import joinedload
 
 class InspectionFormService(BaseService):
     def __init__(self, db: models.Db):
@@ -12,7 +13,6 @@ class InspectionFormService(BaseService):
         if inspectiontype is None:
             raise HTTPException(status_code=404, detail=f"Inspectiontype '{req.inspectiontype}' not found")
 
-        print('*********************************************', req)
         form = models.Inspectionform(
             createdAt=createdAt,
             closedAt = None,
@@ -26,3 +26,8 @@ class InspectionFormService(BaseService):
         self.db.commit()
 
         return form
+
+    def get_by_id(self, id: int):
+        return self.db.query(models.Inspectionform). \
+            options(joinedload(models.Inspectionform.files)). \
+            filter(models.Inspectionform.id == id).all()

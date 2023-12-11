@@ -1,6 +1,5 @@
 import models
 from services.base_service import BaseService
-from typing import Annotated
 from fastapi import Depends
 
 class FileService(BaseService):
@@ -13,8 +12,7 @@ class FileService(BaseService):
         self.db.add(file)
         self.db.commit()
         return True
-    
-def init_file_service(db: models.Db):
-    return FileService(db)
 
-FileService = Annotated[FileService, Depends(init_file_service)]
+    def download(self, inspectionform_id: int, file_id: int):
+        file_record = self.db.query(models.File).filter(models.File.inspectionform_id == inspectionform_id, models.File.id == file_id).first()
+        return file_record
