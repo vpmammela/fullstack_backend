@@ -129,7 +129,8 @@ class Inspectionform(Base):
     inspectiontype = relationship('Inspectiontype')
     user = relationship('User')
     
-#    files = relationship('File')
+    # Added 11.12.2023 klo: 16:52 to conenct photos and forms. 
+    files = relationship('File', back_populates='inspectionform')
 
 
 class Instruction(Base):
@@ -168,11 +169,12 @@ class Inspectionresult(Base):
 
     inspectionform = relationship('Inspectionform')
 
-# class File(Base):
-#     __tablename__ = 'file'
-#     id = Column(INTEGER, primary_key=True)
-#     original_name = Column(String(225), nullable=False)
-#     random_name = Column(String(225), nullable=False, index=True)
-#     inspectionform_id = Column(ForeignKey('inspectionform.id'), nullable=False, index=True)
-#
-#     inspectionform = relationship('Inspectionform')
+# Uncommented and modifies on 11.12.2023 klo: 16:50 --> Logic to between photo and form. 
+class File(Base):
+    __tablename__ = 'file'
+    id = Column(INTEGER, primary_key=True)
+    original_name = Column(String(225), nullable=False)
+    random_name = Column(String(225), nullable=False, index=True)
+    inspectionform_id = Column(ForeignKey('inspectionform.id'), nullable=False, index=True)
+
+    inspectionform = relationship('Inspectionform', back_populates='files')
