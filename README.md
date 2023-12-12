@@ -16,8 +16,19 @@ DB=
 
 for local db have used "mysql+mysqlconnector://root:@localhost/fullstack3002mvp"
 
+## Run backend using docker
+- Make sure you have docker installed and running
+
+```docker compose up --build```
+
+## Run backend locally
 ### Run migrations
+- Make sure you have mysql running (for example XAMPP)
+
 ```alembic upgrade head```
 
-### Start server (mac):
+### Start local server:
+#### mac:
 ``` python3 main.py ```
+#### windows:
+```python main.py```
