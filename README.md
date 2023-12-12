@@ -18,6 +18,8 @@ for local db have used "mysql+mysqlconnector://root:@localhost/fullstack3002mvp"
 
 ## Run backend using docker
 - Make sure you have docker installed and running
+- follow this to create SSL for local: https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/
+
 
 ```docker compose up --build```
 
